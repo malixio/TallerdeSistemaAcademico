@@ -1,28 +1,39 @@
 package Modelo;
-import java.util.ArrayList;
+
 public class Estudiante {
     private String nombre;
-    private String identificacion;
-    private String documento;
-    private static ArrayList<Estudiante> estudiantes = new ArrayList<>();
+    private String identificacion; // Tipo de documento (Cédula, Pasaporte, etc.)
+    private String documento; // Número de documento
 
-    //Contructor vacio
+    // Constructor vacío
     public Estudiante() {
     }
-    //constructor con parametros
 
-
+    // Constructor con parámetros
     public Estudiante(String nombre, String identificacion, String documento) {
+        if (nombre == null || nombre.isEmpty()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío.");
+        }
+        if (identificacion == null || identificacion.isEmpty()) {
+            throw new IllegalArgumentException("El tipo de documento no puede estar vacío.");
+        }
+        if (documento == null || documento.isEmpty()) {
+            throw new IllegalArgumentException("El número de documento no puede estar vacío.");
+        }
         this.nombre = nombre;
-        this.documento=documento;
-        this.identificacion=identificacion;
+        this.identificacion = identificacion;
+        this.documento = documento;
     }
 
+    // Getters y Setters
     public String getNombre() {
         return nombre;
     }
 
     public void setNombre(String nombre) {
+        if (nombre == null || nombre.isEmpty()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío.");
+        }
         this.nombre = nombre;
     }
 
@@ -31,6 +42,9 @@ public class Estudiante {
     }
 
     public void setIdentificacion(String identificacion) {
+        if (identificacion == null || identificacion.isEmpty()) {
+            throw new IllegalArgumentException("El tipo de documento no puede estar vacío.");
+        }
         this.identificacion = identificacion;
     }
 
@@ -39,7 +53,19 @@ public class Estudiante {
     }
 
     public void setDocumento(String documento) {
+        if (documento == null || documento.isEmpty()) {
+            throw new IllegalArgumentException("El número de documento no puede estar vacío.");
+        }
         this.documento = documento;
     }
 
+    // Método para representar al estudiante como una cadena de texto
+    @Override
+    public String toString() {
+        return "Estudiante{" +
+               "nombre='" + nombre + '\'' +
+               ", tipoDocumento='" + identificacion + '\'' +
+               ", documento='" + documento + '\'' +
+               '}';
+    }
 }

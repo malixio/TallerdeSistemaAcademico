@@ -3,77 +3,142 @@ package Modelo;
 import java.util.ArrayList;
 
 public class Asistencia {
-    private String fecha = ""; // formato aaaa/mm/dd
-    private String hora_de_inicio = "";
-    private String hora_final = "";
-    private ArrayList<String> codigos = new ArrayList<String>();
-    private ArrayList<String> estados = new ArrayList<String>(); // 0: A tiempo, 1: tarde, 2: no llegó
+    private String fecha;
+    private String horaDeInicio;
+    private String horaFinal;
+    private ArrayList<String> codigos; // Lista de códigos de estudiantes
+    private ArrayList<String> estados; // Lista de estados de asistencia (A tiempo, Tarde, No llegó)
 
-    public Asistencia() {
-        // Constructor vacío
-    }
+    // Constantes para los estados de asistencia
+    public static final String A_TIEMPO = "A tiempo";
+    public static final String TARDE = "Tarde";
+    public static final String NO_LLEGO = "No llegó";
 
-    public Asistencia(String fecha, String hora_de_inicio, String hora_final) {
+    // Constructor
+    public Asistencia(String fecha, String horaDeInicio, String horaFinal) {
+        if (fecha == null || fecha.isEmpty() || horaDeInicio == null || horaDeInicio.isEmpty() || horaFinal == null || horaFinal.isEmpty()) {
+            throw new IllegalArgumentException("Fecha, hora de inicio y hora final no pueden estar vacías.");
+        }
         this.fecha = fecha;
-        this.hora_de_inicio = hora_de_inicio;
-        this.hora_final = hora_final;
+        this.horaDeInicio = horaDeInicio;
+        this.horaFinal = horaFinal;
+        this.codigos = new ArrayList<>();
+        this.estados = new ArrayList<>();
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
-
-    public void setHora_de_inicio(String hora_de_inicio) {
-        this.hora_de_inicio = hora_de_inicio;
-    }
-
-    public void setHora_final(String hora_final) {
-        this.hora_final = hora_final;
-    }
-
+    // Getters y Setters
     public String getFecha() {
         return fecha;
     }
 
-    public String getHora_de_inicio() {
-        return hora_de_inicio;
+    public void setFecha(String fecha) {
+        if (fecha == null || fecha.isEmpty()) {
+            throw new IllegalArgumentException("La fecha no puede estar vacía.");
+        }
+        this.fecha = fecha;
     }
 
-    public String getHora_final() {
-        return hora_final;
+    public String getHoraDeInicio() {
+        return horaDeInicio;
     }
 
+    public void setHoraDeInicio(String horaDeInicio) {
+        if (horaDeInicio == null || horaDeInicio.isEmpty()) {
+            throw new IllegalArgumentException("La hora de inicio no puede estar vacía.");
+        }
+        this.horaDeInicio = horaDeInicio;
+    }
+
+    public String getHoraFinal() {
+        return horaFinal;
+    }
+
+    public void setHoraFinal(String horaFinal) {
+        if (horaFinal == null || horaFinal.isEmpty()) {
+            throw new IllegalArgumentException("La hora final no puede estar vacía.");
+        }
+        this.horaFinal = horaFinal;
+    }
+
+    public ArrayList<String> getCodigos() {
+        return new ArrayList<>(codigos);
+    }
+
+    public void setCodigos(ArrayList<String> codigos) {
+        if (codigos == null) {
+            throw new IllegalArgumentException("La lista de códigos no puede ser nula.");
+        }
+        this.codigos = new ArrayList<>(codigos);
+    }
+
+    public ArrayList<String> getEstados() {
+        return new ArrayList<>(estados);
+    }
+
+    public void setEstados(ArrayList<String> estados) {
+        if (estados == null) {
+            throw new IllegalArgumentException("La lista de estados no puede ser nula.");
+        }
+        this.estados = new ArrayList<>(estados);
+    }
+
+    // Método para adicionar un estudiante a la lista de asistencia
     public boolean adicionarAsistencia(String codigo, String estado) {
+        if (codigo == null || codigo.isEmpty()) {
+            System.out.println("Error: El código del estudiante no puede estar vacío.");
+            return false;
+        }
+        if (!estado.equals(A_TIEMPO) && !estado.equals(TARDE) && !estado.equals(NO_LLEGO)) {
+            System.out.println("Error: Estado de asistencia inválido.");
+            return false;
+        }
+        if (codigos.contains(codigo)) {
+            System.out.println("Error: El estudiante con código " + codigo + " ya está registrado en la asistencia.");
+            return false;
+        }
         codigos.add(codigo);
         estados.add(estado);
         return true;
     }
 
-    public String consultarAsistencia(String codigo) {
-        for (int vc = 0; vc < codigos.size(); vc++) {
-            if (codigos.get(vc).equalsIgnoreCase(codigo)) {
-                return estados.get(vc);
-            }
+    // Método para eliminar un estudiante de la lista de asistencia
+    public boolean eliminarEstudiante(String codigo) {
+        int index = codigos.indexOf(codigo);
+        if (index == -1) {
+            System.out.println("Error: Estudiante con código " + codigo + " no encontrado en la lista de asistencia.");
+            return false;
         }
-        return null;
-    }
-
-    public boolean modificarAsistencia(String codigo, String estado) {
-        for (int vc = 0; vc < codigos.size(); vc++) {
-            if (codigos.get(vc).equalsIgnoreCase(codigo)) {
-                estados.set(vc, estado);
-                return true;
-            }
-        }
-        return false;
-    }
-    public boolean setEstados(ArrayList<String> estados) {
-        this.estados = estados;
-        return true;
-    }
-    public boolean setCodigos(ArrayList<String> codigos) {
-        this.codigos = codigos;
+        codigos.remove(index);
+        estados.remove(index);
         return true;
     }
 
+    // Método para modificar el estado de un estudiante en la lista de asistencia
+    public boolean modificarEstado(String codigo, String nuevoEstado) {
+        int index = codigos.indexOf(codigo);
+        if (index == -1) {
+            System.out.println("Error: Estudiante con código " + codigo + " no encontrado en la lista de asistencia.");
+            return false;
+        }
+        if (!nuevoEstado.equals(A_TIEMPO) && !nuevoEstado.equals(TARDE) && !nuevoEstado.equals(NO_LLEGO)) {
+            System.out.println("Error: Estado de asistencia inválido.");
+            return false;
+        }
+        estados.set(index, nuevoEstado);
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Fecha: ").append(fecha).append("\n");
+        sb.append("Hora de Inicio: ").append(horaDeInicio).append("\n");
+        sb.append("Hora Final: ").append(horaFinal).append("\n");
+        sb.append("Asistencias:\n");
+        for (int i = 0; i < codigos.size(); i++) {
+            sb.append(" - Estudiante: ").append(codigos.get(i))
+              .append(", Estado: ").append(estados.get(i)).append("\n");
+        }
+        return sb.toString();
+    }
 }
